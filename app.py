@@ -6,6 +6,21 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, cur
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret-key-goes-here'
 
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+db = SQLAlchemy()
+db.init_app(app)
+
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(100), unique=True)
+    password = db.Column(db.String(100))
+    name = db.Column(db.String(1000))
+
+
+with app.app_context():
+    db.create_all()
+
 
 @app.route('/')
 def home():
